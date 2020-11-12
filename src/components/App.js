@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/App.css";
+import "../styles/App.scss";
 import SearchField from "./SearchField";
 import RepoList from "./RepoList";
 import Grid from "@material-ui/core/Grid";
@@ -11,46 +11,76 @@ class App extends React.Component {
       searchInput: "",
       githubUser: null,
       githubRepo: null,
-      repoList: [],
+      repoList: new Set(),
+      headers: {
+        Authorization: `Token a6397b9f1bf0a5dd23ba6c4d516e13a852334b96`,
+      },
     };
+    this.repoListRef = React.createRef();
   }
 
-  componentDidUpdate = (_, prevState) => {
-    const { searchInput, githubUser, githubRepo, repoList } = this.state;
-    if (githubUser !== prevState.githubUser) {
-      this.getRepoLatestRelease();
-    }
+  componentDidMount = () => {
+    this.getRepoLatestRelease();
   };
 
   handleOnSubmit = (event) => {
     event.preventDefault();
-    console.log(event);
-    console.log(this.state.searchInput);
     this.parseSearchInput(this.state.searchInput);
   };
 
   parseSearchInput = (input) => {
-    const inputArray = input.split(" ").join("").split(",");
-    this.setState({
-      githubUser: inputArray[0],
-      githubRepo: inputArray[1],
+    const inputArray = input.split(" ").join("").split("/");
+    this.setState(
+      {
+        githubUser: inputArray[0],
+        githubRepo: inputArray[1],
+      },
+      this.getRepoLatestRelease
+    );
+  };
+
+  onClickTrashIcon = (repo) => {
+    var newRepoList = this.state.repoList;
+    newRepoList = [...newRepoList].filter((repoObject) => {
+      return repoObject !== repo;
     });
+    this.setState({ repoList: new Set(newRepoList) });
   };
 
   getRepoLatestRelease = () => {
     const { githubUser, githubRepo } = this.state;
     fetch(
-      `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`
+      `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`,
+      {
+        method: "GET",
+        headers: this.state.headers,
+      }
     )
       .then((response) => response.json())
       .then((data) => {
-        this.getRepoGeneralInfo(data.published_at, data.tag_name);
+        this.getRepoGeneralInfo(data.published_at, data.tag_name, data.message);
       });
   };
 
-  getRepoGeneralInfo = (publishDate, tagName) => {
+  isRepoAlreadyTracked = (repo) => {
+    const { repoList } = this.state;
+    repoList.forEach((trackedRepo) => {
+      if (
+        trackedRepo.name === repo.name &&
+        trackedRepo.tagName === repo.tagName
+      ) {
+        return true;
+      }
+    });
+    return false;
+  };
+
+  getRepoGeneralInfo = (publishDate, tagName, message) => {
     const { githubUser, githubRepo } = this.state;
-    fetch(`https://api.github.com/repos/${githubUser}/${githubRepo}`)
+    fetch(`https://api.github.com/repos/${githubUser}/${githubRepo}`, {
+      method: "GET",
+      headers: this.state.headers,
+    })
       .then((response) => response.json())
       .then((data) => {
         const newRepo = {
@@ -58,10 +88,16 @@ class App extends React.Component {
           description: data.description,
           releaseDate: publishDate,
           tagName: tagName,
+          message: message,
         };
-        var newRepoList = this.state.repoList;
-        newRepoList.push(newRepo);
-        this.setState({ repoList: newRepoList });
+        if (!this.isRepoAlreadyTracked(newRepo)) {
+          var newRepoList = this.state.repoList;
+          newRepoList.add(newRepo);
+          this.setState({ repoList: newRepoList });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -71,25 +107,28 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <Grid
-          container
-          justifyContent="center"
-          spacing="5"
-          direction="column"
-          className="main-content"
-        >
-          <Grid item>
-            <SearchField
-              searchFieldInput={this.searchFieldInput}
-              handleOnSubmit={this.handleOnSubmit}
-            />
-          </Grid>
-          <Grid item>
-            <RepoList repoList={this.state.repoList} />
-          </Grid>
+      <Grid
+        container
+        alignItems="center"
+        spacing={5}
+        direction="column"
+        className="main-content"
+      >
+        <Grid item className="empty-space"></Grid>
+        <Grid item className="search-box">
+          <SearchField
+            searchFieldInput={this.searchFieldInput}
+            handleOnSubmit={this.handleOnSubmit}
+          />
         </Grid>
-      </div>
+        <Grid item>
+          <RepoList
+            repoList={this.state.repoList}
+            onClickTrashIcon={this.onClickTrashIcon}
+            ref={this.repoListRef}
+          />
+        </Grid>
+      </Grid>
     );
   }
 }
