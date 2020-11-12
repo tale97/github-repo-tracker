@@ -7,12 +7,17 @@ import Typography from "@material-ui/core/Typography";
 
 class Repo extends React.Component {
   render() {
+    const { repo } = this.props;
+    console.log(`DEBUG ${repo}`);
+
     return (
       <Card className="repo">
         <CardContent>
-          Repo Name
+          {repo.name}
           <br />
-          Repo Info
+          {repo.releaseDate.split("T").join(" at ").split("Z").join(" UTC")}
+          <br />
+          {repo.tagName}
         </CardContent>
       </Card>
     );
