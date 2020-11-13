@@ -5,18 +5,31 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import "../styles/Repo.scss";
 import Grid from "@material-ui/core/Grid";
 import ToolBar from "./ToolBar";
+import RepoDialog from "./RepoDialog";
 
 class Repo extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      openDialog: false,
+    };
+  }
+
   isHighlighted = (repoName) => {
     const { highlightedRepoList } = this.props;
     return highlightedRepoList.includes(repoName) ? `highlighted` : ``;
   };
+
+  onClickRepoCard = () => {
+    this.setState({ openDialog: !this.state.openDialog });
+  };
+
   render() {
     const { repo, onClickTrashIcon, onClickCheckMark } = this.props;
     return (
       <div>
         <Card className={`repo ${this.isHighlighted(repo.name)}`}>
-          <CardActionArea>
+          <CardActionArea onClick={this.onClickRepoCard}>
             <Grid container direction="row" alignItems="center" spacing={2}>
               <Grid item className="card-content">
                 <CardContent>
@@ -40,6 +53,7 @@ class Repo extends React.Component {
           onClickCheckMark={onClickCheckMark}
           repo={repo}
         />
+        <RepoDialog open={this.state.openDialog} />
       </div>
     );
   }
