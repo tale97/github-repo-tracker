@@ -192,7 +192,7 @@ class App extends React.Component {
       default:
         return (
           <Alert severity="info">
-            Enter the user name followed by a / and then the repository name
+            {`Enter the GitHub user followed by a '/' and the name of the repository`}
           </Alert>
         );
     }
