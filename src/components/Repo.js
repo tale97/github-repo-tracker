@@ -5,56 +5,45 @@ import "../styles/Repo.scss";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Grid from "@material-ui/core/Grid";
+import BeenhereIcon from "@material-ui/icons/Beenhere";
 
 class Repo extends React.Component {
-  testFunc = () => {
-    console.log("hi");
+  isHighlighted = (repoName) => {
+    const { highlightedRepoList } = this.props;
+    return highlightedRepoList.includes(repoName) ? `highlighted` : ``;
   };
   render() {
-    const { repo } = this.props;
-    if (repo.releaseDate) {
-      if (repo.message === "Not Found") {
-        return (
-          <Card className="repo">
+    const { repo, onClickCheckMark, onClickTrashIcon } = this.props;
+    return (
+      <Card className={`repo ${this.isHighlighted(repo.name)}`}>
+        <Grid container direction="row" alignItems="center" spacing={2}>
+          <Grid item className="card-content">
             <CardContent>
               <b>{repo.name}</b>
               <br />
-              {"Not Found :("}
+              version: {repo.tagName}
+              <br />
+              release:{" "}
+              {repo.releaseDate.split("T").join(" at ").split("Z").join(" UTC")}
             </CardContent>
-          </Card>
-        );
-      }
-      return (
-        <Card className="repo">
-          <Grid container direction="row" alignItems="center" spacing={2}>
-            <Grid item className="card-content">
-              <CardContent>
-                <b>{repo.name}</b>
-                <br />
-                {repo.tagName}
-                <br />
-                {repo.releaseDate
-                  .split("T")
-                  .join(" at ")
-                  .split("Z")
-                  .join(" UTC")}
-              </CardContent>
-            </Grid>
-            <Grid item className="card-control">
-              <IconButton
-                aria-label="delete"
-                onClick={() => this.props.onClickTrashIcon(repo)}
-                // onClick={() => this.testFunc()}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Grid>
           </Grid>
-        </Card>
-      );
-    } else {
-      return null;
-    }
+          <Grid item className="card-control">
+            <IconButton
+              aria-label="delete"
+              onClick={() => onClickTrashIcon(repo)}
+            >
+              <DeleteIcon />
+            </IconButton>
+            <IconButton
+              aria-label="check"
+              onClick={() => onClickCheckMark(repo.name)}
+            >
+              <BeenhereIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Card>
+    );
   }
 }
 

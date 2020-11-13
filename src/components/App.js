@@ -3,6 +3,7 @@ import "../styles/App.scss";
 import SearchField from "./SearchField";
 import RepoList from "./RepoList";
 import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
 
 class App extends React.Component {
   constructor(props) {
@@ -11,7 +12,8 @@ class App extends React.Component {
       searchInput: "",
       githubUser: null,
       githubRepo: null,
-      repoList: new Set(),
+      repoList: [],
+      highlightedRepoList: [],
       headers: {
         Authorization: `Token a6397b9f1bf0a5dd23ba6c4d516e13a852334b96`,
       },
@@ -19,9 +21,7 @@ class App extends React.Component {
     this.repoListRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    this.getRepoLatestRelease();
-  };
+  componentDidMount = () => {};
 
   handleOnSubmit = (event) => {
     event.preventDefault();
@@ -41,10 +41,10 @@ class App extends React.Component {
 
   onClickTrashIcon = (repo) => {
     var newRepoList = this.state.repoList;
-    newRepoList = [...newRepoList].filter((repoObject) => {
+    newRepoList = newRepoList.filter((repoObject) => {
       return repoObject !== repo;
     });
-    this.setState({ repoList: new Set(newRepoList) });
+    this.setState({ repoList: newRepoList });
   };
 
   getRepoLatestRelease = () => {
@@ -64,19 +64,31 @@ class App extends React.Component {
 
   isRepoAlreadyTracked = (repo) => {
     const { repoList } = this.state;
-    repoList.forEach((trackedRepo) => {
+    for (var trackedRepo of repoList) {
       if (
         trackedRepo.name === repo.name &&
         trackedRepo.tagName === repo.tagName
       ) {
         return true;
       }
-    });
+    }
     return false;
+  };
+
+  onClickCheckMark = (repoName) => {
+    console.log("check");
+    var newHighlightedRepoList = this.state.highlightedRepoList;
+    var indexOfRepo = newHighlightedRepoList.indexOf(repoName);
+    if (indexOfRepo > -1) {
+      newHighlightedRepoList.splice(indexOfRepo, 1);
+    }
+    this.setState({ highlightedRepoList: newHighlightedRepoList });
   };
 
   getRepoGeneralInfo = (publishDate, tagName, message) => {
     const { githubUser, githubRepo } = this.state;
+    var newRepoList = [];
+    var newHighlightedRepoList = [];
     fetch(`https://api.github.com/repos/${githubUser}/${githubRepo}`, {
       method: "GET",
       headers: this.state.headers,
@@ -90,10 +102,36 @@ class App extends React.Component {
           tagName: tagName,
           message: message,
         };
-        if (!this.isRepoAlreadyTracked(newRepo)) {
-          var newRepoList = this.state.repoList;
-          newRepoList.add(newRepo);
-          this.setState({ repoList: newRepoList });
+        if (
+          !this.isRepoAlreadyTracked(newRepo) &&
+          newRepo.message !== "Not Found"
+        ) {
+          newRepoList = this.state.repoList;
+          newRepoList.push(newRepo);
+          newHighlightedRepoList = this.state.highlightedRepoList;
+          newHighlightedRepoList.push(newRepo.name);
+          this.setState({
+            repoList: newRepoList,
+            alert: "success",
+            highlightedRepoList: newHighlightedRepoList,
+          });
+        } else if (
+          this.isRepoAlreadyTracked &&
+          this.isRepoGotNewRelease(newRepo)
+        ) {
+          newRepoList = this.state.repoList;
+          newRepoList = this.deleteOutdatedRepo(newRepoList, newRepo);
+          newHighlightedRepoList = this.state.highlightedRepoList;
+          newHighlightedRepoList.push(newRepo.name);
+          this.setState({
+            repoList: newRepoList,
+            alert: "new release",
+            highlightedRepoList: newHighlightedRepoList,
+          });
+        } else if (this.isRepoAlreadyTracked(newRepo)) {
+          this.setState({ alert: "already tracked" });
+        } else if (newRepo.message === "Not Found") {
+          this.setState({ alert: "error" });
         }
       })
       .catch((error) => {
@@ -101,34 +139,86 @@ class App extends React.Component {
       });
   };
 
+  isRepoGotNewRelease = (newRepo) => {
+    const { repoList } = this.state;
+    for (var trackedRepo of repoList) {
+      if (
+        trackedRepo.name === newRepo.name &&
+        trackedRepo.tagName !== newRepo.tagName
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  deleteOutdatedRepo = (repoList, repo) => {
+    const filteredRepoList = repoList.filter((trackedRepo) => {
+      return trackedRepo.name !== repo.name;
+    });
+    return filteredRepoList;
+  };
+
   searchFieldInput = (event) => {
     this.setState({ searchInput: event.target.value });
   };
 
+  displayAlert = () => {
+    switch (this.state.alert) {
+      case "success":
+        return <Alert severity="success">Added a new repo for tracking</Alert>;
+      case "new release":
+        return <Alert severity="success">Success: found new releass(s)</Alert>;
+      case "already tracked":
+        return (
+          <Alert severity="warning">
+            You are already tracking this repository
+          </Alert>
+        );
+      case "error":
+        return (
+          <Alert severity="error">
+            Please check that you have the right user name and repository
+          </Alert>
+        );
+      default:
+        return (
+          <Alert severity="info">
+            Enter the user name followed by a / and then the repository name
+          </Alert>
+        );
+    }
+  };
+
   render() {
     return (
-      <Grid
-        container
-        alignItems="center"
-        spacing={5}
-        direction="column"
-        className="main-content"
-      >
-        <Grid item className="empty-space"></Grid>
-        <Grid item className="search-box">
-          <SearchField
-            searchFieldInput={this.searchFieldInput}
-            handleOnSubmit={this.handleOnSubmit}
-          />
+      <div>
+        {this.displayAlert()}
+        <Grid
+          container
+          alignItems="center"
+          spacing={5}
+          direction="column"
+          className="main-content"
+        >
+          <Grid item className="empty-space"></Grid>
+          <Grid item className="search-box">
+            <SearchField
+              searchFieldInput={this.searchFieldInput}
+              handleOnSubmit={this.handleOnSubmit}
+            />
+          </Grid>
+          <Grid item>
+            <RepoList
+              repoList={this.state.repoList}
+              onClickTrashIcon={this.onClickTrashIcon}
+              onClickCheckMark={this.onClickCheckMark}
+              highlightedRepoList={this.state.highlightedRepoList}
+              ref={this.repoListRef}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <RepoList
-            repoList={this.state.repoList}
-            onClickTrashIcon={this.onClickTrashIcon}
-            ref={this.repoListRef}
-          />
-        </Grid>
-      </Grid>
+      </div>
     );
   }
 }

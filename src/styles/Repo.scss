@@ -2,6 +2,11 @@
   width: 50vw;
   min-width: 300px;
   max-width: 500px;
+  border: solid 2px white;
+}
+
+.highlighted {
+  border: solid 2px #303f9f;
 }
 
 .card-content {

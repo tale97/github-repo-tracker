@@ -7,19 +7,26 @@ class RepoList extends React.Component {
     super(props);
 
     const { repoList } = props;
-    repoList.forEach((repo, index) => {
+    repoList.forEach((_, index) => {
       this[`repo-${index}`] = React.createRef();
     });
   }
 
   render() {
-    const { repoList, onClickTrashIcon } = this.props;
-    var repoComponents = [...repoList].map((repo, index) => {
+    const {
+      repoList,
+      onClickTrashIcon,
+      onClickCheckMark,
+      highlightedRepoList,
+    } = this.props;
+    var repoComponents = repoList.map((repo, index) => {
       return repo.releaseDate ? (
         <Grid item key={index}>
           <Repo
             repo={repo}
             onClickTrashIcon={onClickTrashIcon}
+            onClickCheckMark={onClickCheckMark}
+            highlightedRepoList={highlightedRepoList}
             ref={this[`repo-${index}`]}
           />
         </Grid>
@@ -27,7 +34,13 @@ class RepoList extends React.Component {
     });
 
     return (
-      <Grid container justify="center" spacing={5} alignItems="center">
+      <Grid
+        container
+        justify="center"
+        spacing={2}
+        alignItems="center"
+        direction="column"
+      >
         {repoComponents}
       </Grid>
     );

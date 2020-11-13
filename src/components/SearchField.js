@@ -33,7 +33,7 @@ class SearchField extends React.Component {
               type="submit"
               size="large"
             >
-              Add Repo
+              Track Repo
             </Button>
           </Grid>
         </Grid>
