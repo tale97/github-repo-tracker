@@ -36,6 +36,16 @@ class SearchField extends React.Component {
               Track Repo
             </Button>
           </Grid>
+          <Grid item>
+            <Button
+              color="primary"
+              variant="contained"
+              size="large"
+              onClick={() => this.props.onClickRefresh()}
+            >
+              Refresh
+            </Button>
+          </Grid>
         </Grid>
       </form>
     );

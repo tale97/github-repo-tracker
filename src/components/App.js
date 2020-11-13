@@ -163,6 +163,10 @@ class App extends React.Component {
     this.setState({ searchInput: event.target.value });
   };
 
+  onClickRefresh = () => {
+    this.getRepoLatestRelease();
+  };
+
   displayAlert = () => {
     switch (this.state.alert) {
       case "success":
@@ -206,6 +210,7 @@ class App extends React.Component {
             <SearchField
               searchFieldInput={this.searchFieldInput}
               handleOnSubmit={this.handleOnSubmit}
+              onClickRefresh={this.onClickRefresh}
             />
           </Grid>
           <Grid item>
