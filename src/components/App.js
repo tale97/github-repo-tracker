@@ -1,6 +1,7 @@
 import React from "react";
 import "../styles/App.scss";
 import SearchField from "./SearchField";
+import FilterBar from "./FilterBar";
 import RepoList from "./RepoList";
 import Grid from "@material-ui/core/Grid";
 import Alert from "@material-ui/lab/Alert";
@@ -10,6 +11,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       searchInput: "",
+      filterInput: "",
       githubUser: null,
       githubRepo: null,
       repoList: [],
@@ -22,6 +24,12 @@ class App extends React.Component {
   }
 
   componentDidMount = () => {};
+
+  componentDidUpdate = (_, prevState) => {
+    if (prevState.repoList !== this.state.repoList) {
+      this.setState({});
+    }
+  };
 
   handleOnSubmit = (event) => {
     event.preventDefault();
@@ -167,8 +175,21 @@ class App extends React.Component {
     this.setState({ searchInput: event.target.value });
   };
 
+  filterFieldInput = (event) => {
+    this.setState({
+      filterInput: event.target.value,
+    });
+  };
+
   onClickRefresh = () => {
     this.getRepoLatestRelease();
+  };
+
+  filterRepoList = (repoList, filterWord) => {
+    var filteredRepoList = repoList.filter((repo) => {
+      return repo.name.includes(filterWord);
+    });
+    return filteredRepoList;
   };
 
   displayAlert = () => {
@@ -199,6 +220,7 @@ class App extends React.Component {
   };
 
   render() {
+    const { repoList, filterInput } = this.state;
     return (
       <div>
         {this.displayAlert()}
@@ -210,16 +232,19 @@ class App extends React.Component {
           className="main-content"
         >
           <Grid item className="empty-space"></Grid>
-          <Grid item className="search-box">
+          <Grid item className="search-bar">
             <SearchField
               searchFieldInput={this.searchFieldInput}
               handleOnSubmit={this.handleOnSubmit}
               onClickRefresh={this.onClickRefresh}
             />
           </Grid>
+          <Grid item className="filter-bar">
+            <FilterBar filterFieldInput={this.filterFieldInput} />
+          </Grid>
           <Grid item>
             <RepoList
-              repoList={this.state.repoList}
+              repoList={this.filterRepoList(repoList, filterInput)}
               onClickTrashIcon={this.onClickTrashIcon}
               onClickCheckMark={this.onClickCheckMark}
               highlightedRepoList={this.state.highlightedRepoList}

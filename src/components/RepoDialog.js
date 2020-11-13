@@ -6,7 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-export default function RepoDialog({ repo, open, toggleDialogVisibility }) {
+export default function RepoDialog({ repo, toggleDialogVisibility, open }) {
   return (
     <div>
       <Dialog
@@ -19,15 +19,11 @@ export default function RepoDialog({ repo, open, toggleDialogVisibility }) {
         <DialogTitle id="alert-dialog-title">{"Release Details"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <b>Repo:</b> {repo.name}
-            <br />
+            <b>Repo:</b> {repo.tagName}
             <b>Version:</b> {repo.tagName}
-            <br />
             <b>Title:</b> {repo.title}
-            <br />
             <b>Author:</b> {repo.author}
-            <br />
-            <b>Details:</b> {repo.body}
+            <b>Release Notes:</b> {repo.body}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -6,6 +6,7 @@ import "../styles/ToolBar.scss";
 import Tooltip from "@material-ui/core/Tooltip";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import GitHubIcon from "@material-ui/icons/GitHub";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 class ToolBar extends React.Component {
   onClickGitHubIcon = (link) => {
@@ -22,7 +23,7 @@ class ToolBar extends React.Component {
               aria-label="delete"
               onClick={() => onClickTrashIcon(repo)}
             >
-              <VisibilityOffIcon />
+              <DeleteIcon />
             </IconButton>
           </Tooltip>
         </Grid>
