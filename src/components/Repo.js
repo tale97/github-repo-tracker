@@ -33,8 +33,7 @@ class Repo extends React.Component {
             <Grid container direction="row" alignItems="center" spacing={2}>
               <Grid item className="card-content">
                 <CardContent>
-                  <b>{repo.name}</b>
-                  <br />
+                  <h2>{repo.name}</h2>
                   version: {repo.tagName}
                   <br />
                   release:{" "}

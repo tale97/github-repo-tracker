@@ -65,6 +65,7 @@ class App extends React.Component {
           body: data.body,
           title: data.name,
           author: data.author.login,
+          githubLink: data.html_url,
         };
         this.getRepoGeneralInfo(repoReleaseInfo);
       });
