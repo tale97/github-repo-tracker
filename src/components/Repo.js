@@ -20,7 +20,7 @@ class Repo extends React.Component {
     return highlightedRepoList.includes(repoName) ? `highlighted` : ``;
   };
 
-  onClickRepoCard = () => {
+  toggleDialogVisibility = () => {
     this.setState({ openDialog: !this.state.openDialog });
   };
 
@@ -29,7 +29,7 @@ class Repo extends React.Component {
     return (
       <div>
         <Card className={`repo ${this.isHighlighted(repo.name)}`}>
-          <CardActionArea onClick={this.onClickRepoCard}>
+          <CardActionArea onClick={this.toggleDialogVisibility}>
             <Grid container direction="row" alignItems="center" spacing={2}>
               <Grid item className="card-content">
                 <CardContent>
@@ -53,7 +53,11 @@ class Repo extends React.Component {
           onClickCheckMark={onClickCheckMark}
           repo={repo}
         />
-        <RepoDialog open={this.state.openDialog} />
+        <RepoDialog
+          open={this.state.openDialog}
+          toggleDialogVisibility={this.toggleDialogVisibility}
+          repo={repo}
+        />
       </div>
     );
   }

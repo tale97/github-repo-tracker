@@ -58,7 +58,15 @@ class App extends React.Component {
     )
       .then((response) => response.json())
       .then((data) => {
-        this.getRepoGeneralInfo(data.published_at, data.tag_name, data.message);
+        const repoReleaseInfo = {
+          releaseDate: data.published_at,
+          tagName: data.tag_name,
+          message: data.message,
+          body: data.body,
+          title: data.name,
+          author: data.author.login,
+        };
+        this.getRepoGeneralInfo(repoReleaseInfo);
       });
   };
 
@@ -85,7 +93,7 @@ class App extends React.Component {
     this.setState({ highlightedRepoList: newHighlightedRepoList });
   };
 
-  getRepoGeneralInfo = (publishDate, tagName, message) => {
+  getRepoGeneralInfo = (repoReleaseInfo) => {
     const { githubUser, githubRepo } = this.state;
     var newRepoList = [];
     var newHighlightedRepoList = [];
@@ -95,21 +103,16 @@ class App extends React.Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        const newRepo = {
-          name: data.name,
-          description: data.description,
-          releaseDate: publishDate,
-          tagName: tagName,
-          message: message,
-        };
+        repoReleaseInfo.name = data.name;
+        repoReleaseInfo.description = data.description;
         if (
-          !this.isRepoAlreadyTracked(newRepo) &&
-          newRepo.message !== "Not Found"
+          !this.isRepoAlreadyTracked(repoReleaseInfo) &&
+          repoReleaseInfo.message !== "Not Found"
         ) {
           newRepoList = this.state.repoList;
-          newRepoList.push(newRepo);
+          newRepoList.push(repoReleaseInfo);
           newHighlightedRepoList = this.state.highlightedRepoList;
-          newHighlightedRepoList.push(newRepo.name);
+          newHighlightedRepoList.push(repoReleaseInfo.name);
           this.setState({
             repoList: newRepoList,
             alert: "success",
@@ -117,20 +120,20 @@ class App extends React.Component {
           });
         } else if (
           this.isRepoAlreadyTracked &&
-          this.isRepoGotNewRelease(newRepo)
+          this.isRepoGotNewRelease(repoReleaseInfo)
         ) {
           newRepoList = this.state.repoList;
-          newRepoList = this.deleteOutdatedRepo(newRepoList, newRepo);
+          newRepoList = this.deleteOutdatedRepo(newRepoList, repoReleaseInfo);
           newHighlightedRepoList = this.state.highlightedRepoList;
-          newHighlightedRepoList.push(newRepo.name);
+          newHighlightedRepoList.push(repoReleaseInfo.name);
           this.setState({
             repoList: newRepoList,
             alert: "new release",
             highlightedRepoList: newHighlightedRepoList,
           });
-        } else if (this.isRepoAlreadyTracked(newRepo)) {
+        } else if (this.isRepoAlreadyTracked(repoReleaseInfo)) {
           this.setState({ alert: "already tracked" });
-        } else if (newRepo.message === "Not Found") {
+        } else if (repoReleaseInfo.message === "Not Found") {
           this.setState({ alert: "error" });
         }
       })
