@@ -15,9 +15,9 @@ class Repo extends React.Component {
     };
   }
 
-  isHighlighted = (repoName) => {
-    const { highlightedRepoList } = this.props;
-    return highlightedRepoList.includes(repoName) ? `highlighted` : ``;
+  isHighlighted = () => {
+    const { highlightedRepoList, repo } = this.props;
+    return highlightedRepoList.includes(repo.name) ? `highlighted` : ``;
   };
 
   toggleDialogVisibility = () => {
@@ -50,6 +50,7 @@ class Repo extends React.Component {
         <ToolBar
           onClickTrashIcon={onClickTrashIcon}
           onClickCheckMark={onClickCheckMark}
+          isHighlighted={this.isHighlighted()}
           repo={repo}
         />
         <RepoDialog

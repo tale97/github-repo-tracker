@@ -2,12 +2,10 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 class SearchField extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <form onSubmit={this.props.handleOnSubmit}>
@@ -24,6 +22,13 @@ class SearchField extends React.Component {
               variant="outlined"
               label="user / repository"
               onChange={this.props.searchFieldInput}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PlaylistAddIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item>
@@ -33,7 +38,7 @@ class SearchField extends React.Component {
               type="submit"
               size="large"
             >
-              Track Repo
+              Add Repo
             </Button>
           </Grid>
           <Grid item>
