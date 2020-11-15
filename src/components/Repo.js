@@ -34,9 +34,9 @@ class Repo extends React.Component {
               <Grid item className="card-content">
                 <CardContent>
                   <h2>{repo.name}</h2>
-                  version: {repo.tagName}
+                  Latest version: {repo.tagName}
                   <br />
-                  release:{" "}
+                  Latest release:{" "}
                   {repo.releaseDate
                     .split("T")
                     .join(" at ")

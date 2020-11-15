@@ -22,12 +22,12 @@ class SpeedDialControl extends React.Component {
   actions = [
     {
       icon: <DeleteForeverIcon color="primary" />,
-      name: "Delete",
+      name: "Untrack All",
       onClick: this.props.deleteAllRepos,
     },
     {
       icon: <RefreshIcon color="primary" />,
-      name: "Refresh",
+      name: "Refresh All",
       onClick: this.props.getAllReposLatestReleases,
     },
   ];
@@ -75,6 +75,7 @@ class SpeedDialControl extends React.Component {
             tooltipTitle={action.name}
             onClick={action.onClick}
             tooltipOpen
+            style={{ whiteSpace: "nowrap" }}
           />
         ))}
       </SpeedDial>

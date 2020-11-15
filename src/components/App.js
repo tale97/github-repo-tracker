@@ -76,7 +76,6 @@ class App extends React.Component {
   };
 
   deleteAllRepos = () => {
-    console.log("DELETE");
     this.setState({
       repoList: [],
       highlightedRepoList: [],

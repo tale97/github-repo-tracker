@@ -24,7 +24,7 @@ class ToolBar extends React.Component {
         alignItems="center"
       >
         <Grid item className="release-status">
-          Tracking commits
+          Tracking release
         </Grid>
         <Grid item className="toolbar-empty-space"></Grid>
         <Grid item className="github-button">
@@ -49,7 +49,7 @@ class ToolBar extends React.Component {
         </Grid>
         {this.props.isHighlighted === "highlighted" ? (
           <Grid item className={`check-button bounce`}>
-            <Tooltip title="Mark repository as seen">
+            <Tooltip title="Mark update as seen">
               <IconButton
                 aria-label="check"
                 onClick={() => onClickCheckMark(repo.name)}
