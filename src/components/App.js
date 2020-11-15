@@ -1,7 +1,6 @@
 import React from "react";
 import "../styles/App.scss";
-import SearchField from "./SearchField";
-import FilterBar from "./FilterBar";
+import SearchFunction from "./SearchFunction";
 import RepoList from "./RepoList";
 import Grid from "@material-ui/core/Grid";
 import Alert from "@material-ui/lab/Alert";
@@ -20,6 +19,7 @@ class App extends React.Component {
       repoListOrderedByDateAdded: [],
       repoListOrderedByName: [],
       isAlertDisplayed: false,
+      searchFunctionType: "search",
       headers: {
         Authorization: `Token a6397b9f1bf0a5dd23ba6c4d516e13a852334b96`,
       },
@@ -196,27 +196,39 @@ class App extends React.Component {
     switch (this.state.alert) {
       case "success":
         return (
-          <Alert severity="success" onClose={this.onCloseAlert}>
+          <Alert
+            severity="success"
+            variant="filled"
+            onClose={this.onCloseAlert}
+          >
             Added a new repo for tracking
           </Alert>
         );
       case "new release":
-        return <Alert severity="success">Found new release(s)</Alert>;
+        return (
+          <Alert
+            severity="success"
+            variant="filled"
+            onClose={this.onCloseAlert}
+          >
+            Found new release(s)
+          </Alert>
+        );
       case "no new release":
         return (
-          <Alert severity="info" onClose={this.onCloseAlert}>
+          <Alert severity="info" variant="filled" onClose={this.onCloseAlert}>
             There is no new update for these repositories
           </Alert>
         );
       case "error":
         return (
-          <Alert severity="error" onClose={this.onCloseAlert}>
+          <Alert severity="error" variant="filled" onClose={this.onCloseAlert}>
             Please check that you have the right user name and repository
           </Alert>
         );
       default:
         return (
-          <Alert severity="info" onClose={this.onCloseAlert}>
+          <Alert severity="info" variant="filled" onClose={this.onCloseAlert}>
             {`Enter the GitHub user followed by a '/' and the name of the repository`}
           </Alert>
         );
@@ -227,12 +239,27 @@ class App extends React.Component {
     this.setState({ isAlertDisplayed: false });
   };
 
+  onClickFilterFunction = () => {
+    this.setState({ searchFunctionType: "filter" });
+  };
+
+  onClickSearchFunction = () => {
+    this.setState({ searchFunctionType: "search" });
+  };
+
   render() {
-    const { repoList, filterInput } = this.state;
+    const {
+      repoList,
+      filterInput,
+      searchFunctionType,
+      highlightedRepoList,
+      isAlertDisplayed,
+    } = this.state;
+
     return (
       <div>
         <Snackbar
-          open={this.state.isAlertDisplayed}
+          open={isAlertDisplayed}
           autoHideDuration={6000}
           onClose={this.onCloseAlert}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -247,22 +274,23 @@ class App extends React.Component {
           className="main-content"
         >
           <Grid item className="empty-space"></Grid>
-          <Grid item className="search-bar">
-            <SearchField
+          <Grid item className="search-function">
+            <SearchFunction
               searchFieldInput={this.searchFieldInput}
               handleOnSubmit={this.handleOnSubmit}
               onClickRefresh={this.onClickRefresh}
+              filterFieldInput={this.filterFieldInput}
+              onClickFilterFunction={this.onClickFilterFunction}
+              onClickSearchFunction={this.onClickSearchFunction}
+              searchFunctionType={searchFunctionType}
             />
-          </Grid>
-          <Grid item className="filter-bar">
-            <FilterBar filterFieldInput={this.filterFieldInput} />
           </Grid>
           <Grid item>
             <RepoList
               repoList={this.filterRepoList(repoList, filterInput)}
               onClickTrashIcon={this.onClickTrashIcon}
               onClickCheckMark={this.onClickCheckMark}
-              highlightedRepoList={this.state.highlightedRepoList}
+              highlightedRepoList={highlightedRepoList}
               ref={this.repoListRef}
             />
           </Grid>

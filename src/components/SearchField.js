@@ -5,11 +5,40 @@ import Grid from "@material-ui/core/Grid";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 class SearchField extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      anchorEl: null,
+    };
+  }
+
+  onCloseSearchFunction = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  onClickSearchFunction = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
   render() {
     return (
       <form onSubmit={this.props.handleOnSubmit}>
+        <Menu
+          id="search-function-menu"
+          anchorEl={this.state.anchorEl}
+          keepMounted
+          open={Boolean(this.state.anchorEl)}
+          onClose={this.onCloseSearchFunction}
+        >
+          <MenuItem onClick={this.props.onClickFilterFunction}>Filter</MenuItem>
+          <MenuItem onClick={this.props.onClickSearchFucntion}>
+            Add Repo
+          </MenuItem>
+        </Menu>
         <Grid
           container
           justify="center"
@@ -27,7 +56,11 @@ class SearchField extends React.Component {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <IconButton>
+                    <IconButton
+                      aria-controls="search-type-menu"
+                      aria-haspopup="true"
+                      onClick={this.onClickSearchFunction}
+                    >
                       <PlaylistAddIcon />
                     </IconButton>
                   </InputAdornment>
