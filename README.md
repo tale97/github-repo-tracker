@@ -32,6 +32,7 @@ This is a take home assignment assigned to me by a company. This web app is stil
 - More options to filter repositories list (by latest updates/alphabetical sorting/date added and so on)
 - User Login/Account creation
 - Better, more intuitive UI similar to Spotify's playlist UI
+- A clear X button to clear search input
 
 ## Setup
 ### `npm install`
