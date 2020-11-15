@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/github-repo-tracker/static/css/main.c211adaa.chunk.css",
-    "main.js": "/github-repo-tracker/static/js/main.c944dedb.chunk.js",
-    "main.js.map": "/github-repo-tracker/static/js/main.c944dedb.chunk.js.map",
+    "main.css": "/github-repo-tracker/static/css/main.b868fd8c.chunk.css",
+    "main.js": "/github-repo-tracker/static/js/main.72cd6dc1.chunk.js",
+    "main.js.map": "/github-repo-tracker/static/js/main.72cd6dc1.chunk.js.map",
     "runtime-main.js": "/github-repo-tracker/static/js/runtime-main.56e9e741.js",
     "runtime-main.js.map": "/github-repo-tracker/static/js/runtime-main.56e9e741.js.map",
     "static/js/2.9d4039fd.chunk.js": "/github-repo-tracker/static/js/2.9d4039fd.chunk.js",
@@ -10,13 +10,13 @@
     "static/js/3.2eb7787a.chunk.js": "/github-repo-tracker/static/js/3.2eb7787a.chunk.js",
     "static/js/3.2eb7787a.chunk.js.map": "/github-repo-tracker/static/js/3.2eb7787a.chunk.js.map",
     "index.html": "/github-repo-tracker/index.html",
-    "static/css/main.c211adaa.chunk.css.map": "/github-repo-tracker/static/css/main.c211adaa.chunk.css.map",
+    "static/css/main.b868fd8c.chunk.css.map": "/github-repo-tracker/static/css/main.b868fd8c.chunk.css.map",
     "static/js/2.9d4039fd.chunk.js.LICENSE.txt": "/github-repo-tracker/static/js/2.9d4039fd.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.56e9e741.js",
     "static/js/2.9d4039fd.chunk.js",
-    "static/css/main.c211adaa.chunk.css",
-    "static/js/main.c944dedb.chunk.js"
+    "static/css/main.b868fd8c.chunk.css",
+    "static/js/main.72cd6dc1.chunk.js"
   ]
 }
