@@ -33,6 +33,8 @@ export default function RepoDialog({ repo, toggleDialogVisibility, open }) {
             <br />
             <b>{capitalize(`${repo.trackingType}`)} Title:</b> {repo.title}
             <br />
+            <b>Date:</b> {`${repo.releaseDate}`}
+            <br />
             <b>Author:</b> {repo.author}
             <br />
             <b>{capitalize(`${repo.trackingType}`)} Notes:</b> {repo.body}

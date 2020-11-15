@@ -12,8 +12,8 @@ class App extends React.Component {
     this.state = {
       searchInput: "",
       filterInput: "",
-      githubUser: null,
-      githubRepo: null,
+      gitHubUser: null,
+      gitHubRepo: null,
       repoList: [],
       highlightedRepoList: [],
       repoListOrderedByDateAdded: [],
@@ -34,14 +34,14 @@ class App extends React.Component {
 
   parseSearchInput = (input) => {
     const inputArray = input.split(" ").join("").split("/");
-    const githubUser = inputArray[0];
-    const githubRepo = inputArray[1];
+    const gitHubUser = inputArray[0];
+    const gitHubRepo = inputArray[1];
     this.setState(
       {
-        githubUser: githubUser,
-        githubRepo: githubRepo,
+        gitHubUser: gitHubUser,
+        gitHubRepo: gitHubRepo,
       },
-      this.getRepoLatestRelease(githubUser, githubRepo)
+      this.getRepoLatestRelease(gitHubUser, gitHubRepo)
     );
   };
 
@@ -57,8 +57,8 @@ class App extends React.Component {
     const { repoList } = this.state;
     for (var trackedRepo of repoList) {
       if (
-        trackedRepo.name === repo.name &&
-        trackedRepo.tagName === repo.tagName
+        trackedRepo.gitHubUser === repo.gitHubUser &&
+        trackedRepo.gitHubRepo === repo.gitHubRepo
       ) {
         return true;
       }
@@ -91,9 +91,9 @@ class App extends React.Component {
     }
   };
 
-  getRepoLatestRelease = (githubUser, githubRepo) => {
+  getRepoLatestRelease = (gitHubUser, gitHubRepo) => {
     var repoReleaseInfo = null;
-    var gitHubAPIRequestUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`;
+    var gitHubAPIRequestUrl = `https://api.github.com/repos/${gitHubUser}/${gitHubRepo}/releases/latest`;
     fetch(gitHubAPIRequestUrl, {
       method: "GET",
       headers: this.state.headers,
@@ -101,10 +101,11 @@ class App extends React.Component {
       .then((response) => response.json())
       .then((data) => {
         if (data.name !== undefined && data.name !== null) {
+          console.log(`latest release ${gitHubRepo}`);
           repoReleaseInfo = {
             trackingType: "release",
-            gitHubUser: githubUser,
-            gitHubRepo: githubRepo,
+            gitHubUser: gitHubUser,
+            gitHubRepo: gitHubRepo,
             releaseDate: data.published_at,
             tagName: data.tag_name,
             message: data.message,
@@ -115,20 +116,19 @@ class App extends React.Component {
           };
           this.getRepoGeneralInfo(repoReleaseInfo);
         } else {
-          this.getRepoLatestCommit(githubUser, githubRepo);
+          this.getRepoLatestCommit(gitHubUser, gitHubRepo);
         }
       })
       .catch((error) => {
         console.log(error);
         // attempt to get latest commit instead
-        this.getRepoLatestCommit(githubUser, githubRepo);
+        this.getRepoLatestCommit(gitHubUser, gitHubRepo);
       });
   };
 
-  getRepoLatestCommit = (githubUser, githubRepo) => {
+  getRepoLatestCommit = (gitHubUser, gitHubRepo) => {
     var repoReleaseInfo = null;
-    var gitHubAPIRequestUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/commits`;
-    console.log(`get commits ${gitHubAPIRequestUrl}`);
+    var gitHubAPIRequestUrl = `https://api.github.com/repos/${gitHubUser}/${gitHubRepo}/commits`;
 
     fetch(gitHubAPIRequestUrl, {
       method: "GET",
@@ -137,12 +137,12 @@ class App extends React.Component {
       .then((response) => response.json())
       .then((data) => {
         var latestCommit = data[0];
-        console.log(latestCommit);
         if (latestCommit.sha !== undefined && latestCommit.sha !== null) {
+          console.log(`latest commit ${gitHubRepo}`);
           repoReleaseInfo = {
             trackingType: "commit",
-            gitHubUser: githubUser,
-            gitHubRepo: githubRepo,
+            gitHubUser: gitHubUser,
+            gitHubRepo: gitHubRepo,
             releaseDate: latestCommit.commit.committer.date,
             tagName: "N/A",
             message: latestCommit.commit.message,
@@ -163,10 +163,10 @@ class App extends React.Component {
   };
 
   getRepoGeneralInfo = (repoReleaseInfo) => {
-    const { githubUser, githubRepo } = this.state;
+    const { gitHubUser, gitHubRepo } = this.state;
     var newRepoList = [];
     var newHighlightedRepoList = [];
-    fetch(`https://api.github.com/repos/${githubUser}/${githubRepo}`, {
+    fetch(`https://api.github.com/repos/${gitHubUser}/${gitHubRepo}`, {
       method: "GET",
       headers: this.state.headers,
     })
@@ -186,7 +186,7 @@ class App extends React.Component {
             isAlertDisplayed: true,
           });
         } else {
-          if (this.isRepoGotNewRelease(repoReleaseInfo)) {
+          if (this.isRepoGotNewUpdate(repoReleaseInfo)) {
             newRepoList = this.state.repoList;
             newRepoList = this.deleteOutdatedRepo(newRepoList, repoReleaseInfo);
             newHighlightedRepoList = this.state.highlightedRepoList;
@@ -207,13 +207,25 @@ class App extends React.Component {
       });
   };
 
-  isRepoGotNewRelease = (newRepo) => {
+  printRepoList = () => {
+    for (var repo of this.state.repoList) {
+      console.log(`${repo.gitHubUser}/${repo.gitHubRepo}`);
+    }
+  };
+
+  isRepoGotNewUpdate = (newRepo) => {
     const { repoList } = this.state;
+    this.printRepoList();
+
     for (var trackedRepo of repoList) {
+      console.log(`${trackedRepo.name}`);
       if (
         trackedRepo.name === newRepo.name &&
-        trackedRepo.tagName !== newRepo.tagName
+        trackedRepo.releaseDate !== newRepo.releaseDate
       ) {
+        console.log(
+          `NEW UPDATE ${trackedRepo.name} ${trackedRepo.releaseDate} ${newRepo.name} ${newRepo.releaseDate}`
+        );
         return true;
       }
     }
@@ -282,7 +294,8 @@ class App extends React.Component {
         return (
           <Alert severity="error" variant="filled" onClose={this.onCloseAlert}>
             Apologies! Apparently we can't get any info about releases or
-            commits for this repository :(
+            commits for this repository. Make sure that you have the correct
+            "user/repository"
           </Alert>
         );
       default:
