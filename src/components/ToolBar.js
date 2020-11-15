@@ -50,14 +50,16 @@ class ToolBar extends React.Component {
           </Grid>
         ) : (
           <Grid item className={`check-button`}>
-            <Tooltip title="Mark repository as seen">
-              <IconButton
-                aria-label="check"
-                onClick={() => onClickCheckMark(repo.name)}
-              >
-                <BeenhereIcon />
-              </IconButton>
-            </Tooltip>
+            <IconButton
+              aria-label="check"
+              onClick={() => onClickCheckMark(repo.name)}
+              color="primary"
+              disableRipple="true"
+              disableFocusRipple="true"
+              style={{ backgroundColor: "transparent", cursor: "default" }}
+            >
+              <BeenhereIcon />
+            </IconButton>
           </Grid>
         )}
       </Grid>

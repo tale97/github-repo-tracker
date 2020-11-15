@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
 
 class SearchField extends React.Component {
   render() {
@@ -20,12 +21,15 @@ class SearchField extends React.Component {
             <TextField
               id="outlined-basic"
               variant="outlined"
-              label="user / repository"
+              label="Add a repository to tracking list"
+              placeholder="user / repository"
               onChange={this.props.searchFieldInput}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PlaylistAddIcon />
+                    <IconButton>
+                      <PlaylistAddIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

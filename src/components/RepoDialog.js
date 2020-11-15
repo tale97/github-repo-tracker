@@ -19,10 +19,14 @@ export default function RepoDialog({ repo, toggleDialogVisibility, open }) {
         <DialogTitle id="alert-dialog-title">{"Release Details"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <b>Repo:</b> {repo.tagName}
+            <b>Repo:</b> {repo.name}
+            <br />
             <b>Version:</b> {repo.tagName}
-            <b>Title:</b> {repo.title}
+            <br />
+            <b>Release Title:</b> {repo.title}
+            <br />
             <b>Author:</b> {repo.author}
+            <br />
             <b>Release Notes:</b> {repo.body}
           </DialogContentText>
         </DialogContent>

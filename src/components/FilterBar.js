@@ -9,7 +9,8 @@ class FilterBar extends React.Component {
       <TextField
         id="outlined-basic"
         variant="outlined"
-        label="Filter tracked repositories"
+        label="Filter tracked repositories by name"
+        placeholder="repository name"
         onChange={this.props.filterFieldInput}
         InputProps={{
           startAdornment: (
