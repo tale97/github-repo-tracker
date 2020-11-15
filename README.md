@@ -12,7 +12,7 @@ Here's the [link to the web app](https://tale97.github.io/github-repo-tracker/) 
 - Simply type the "user" followed by a "/" and then the repository's name (ie. to track Microsoft's visual studio code, type in "microsoft/vscode")
 - You can also switch the search function (by clicking on the icon to the left of the search box) to filter function to filter out repository that you're currently tracking
 - Hover over the floating icon on the bottom right to delete all repository or refresh repository to check for updates
-- click on each repository's card to see detailed release notes
+- Click on each repository's card to see detailed release notes
 
 ## Technologies used
 
