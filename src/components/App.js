@@ -2,9 +2,9 @@ import React from "react";
 import "../styles/App.scss";
 import SearchFunction from "./SearchFunction";
 import RepoList from "./RepoList";
-import Grid from "@material-ui/core/Grid";
 import Alert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
+import { Snackbar, Grid, Button } from "@material-ui/core";
+import SpeedDialControl from "./SpeedDialControl";
 
 class App extends React.Component {
   constructor(props) {
@@ -34,12 +34,14 @@ class App extends React.Component {
 
   parseSearchInput = (input) => {
     const inputArray = input.split(" ").join("").split("/");
+    const githubUser = inputArray[0];
+    const githubRepo = inputArray[1];
     this.setState(
       {
-        githubUser: inputArray[0],
-        githubRepo: inputArray[1],
+        githubUser: githubUser,
+        githubRepo: githubRepo,
       },
-      this.getRepoLatestRelease
+      this.getRepoLatestRelease(githubUser, githubRepo)
     );
   };
 
@@ -73,10 +75,24 @@ class App extends React.Component {
     this.setState({ highlightedRepoList: newHighlightedRepoList });
   };
 
-  getAllReposLatestReleases = () => {};
+  deleteAllRepos = () => {
+    console.log("DELETE");
+    this.setState({
+      repoList: [],
+      highlightedRepoList: [],
+      repoListOrderedByDateAdded: [],
+      repoListOrderedByName: [],
+    });
+  };
 
-  getRepoLatestRelease = () => {
-    const { githubUser, githubRepo } = this.state;
+  getAllReposLatestReleases = () => {
+    const { repoList } = this.state;
+    for (var repo of repoList) {
+      this.getRepoLatestRelease(repo.gitHubUser, repo.gitHubRepo);
+    }
+  };
+
+  getRepoLatestRelease = (githubUser, githubRepo) => {
     var repoReleaseInfo = null;
     fetch(
       `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`,
@@ -181,10 +197,6 @@ class App extends React.Component {
     });
   };
 
-  onClickRefresh = () => {
-    this.getRepoLatestRelease();
-  };
-
   filterRepoList = (repoList, filterWord) => {
     var filteredRepoList = repoList.filter((repo) => {
       return repo.name.includes(filterWord);
@@ -258,6 +270,10 @@ class App extends React.Component {
 
     return (
       <div>
+        <SpeedDialControl
+          getAllReposLatestReleases={this.getAllReposLatestReleases}
+          deleteAllRepos={this.deleteAllRepos}
+        />
         <Snackbar
           open={isAlertDisplayed}
           autoHideDuration={6000}
@@ -278,7 +294,6 @@ class App extends React.Component {
             <SearchFunction
               searchFieldInput={this.searchFieldInput}
               handleOnSubmit={this.handleOnSubmit}
-              onClickRefresh={this.onClickRefresh}
               filterFieldInput={this.filterFieldInput}
               onClickFilterFunction={this.onClickFilterFunction}
               onClickSearchFunction={this.onClickSearchFunction}

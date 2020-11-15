@@ -16,7 +16,17 @@ class ToolBar extends React.Component {
   render() {
     const { repo, onClickCheckMark, onClickTrashIcon } = this.props;
     return (
-      <Grid className="tool-bar" justify="flex-end" container direction="row">
+      <Grid
+        className="tool-bar"
+        justify="flex-end"
+        container
+        direction="row"
+        alignItems="center"
+      >
+        <Grid item className="release-status">
+          Tracking commits
+        </Grid>
+        <Grid item className="toolbar-empty-space"></Grid>
         <Grid item className="github-button">
           <Tooltip title="Go to GitHub page">
             <IconButton
