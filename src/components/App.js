@@ -3,7 +3,7 @@ import "../styles/App.scss";
 import SearchFunction from "./SearchFunction";
 import RepoList from "./RepoList";
 import Alert from "@material-ui/lab/Alert";
-import { Snackbar, Grid, Button } from "@material-ui/core";
+import { Snackbar, Grid } from "@material-ui/core";
 import SpeedDialControl from "./SpeedDialControl";
 
 class App extends React.Component {
@@ -93,16 +93,17 @@ class App extends React.Component {
 
   getRepoLatestRelease = (githubUser, githubRepo) => {
     var repoReleaseInfo = null;
-    fetch(
-      `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`,
-      {
-        method: "GET",
-        headers: this.state.headers,
-      }
-    )
+    var gitHubAPIRequestUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`;
+
+    console.log(`test ${gitHubAPIRequestUrl}`);
+    fetch(gitHubAPIRequestUrl, {
+      method: "GET",
+      headers: this.state.headers,
+    })
       .then((response) => response.json())
       .then((data) => {
-        if (data.name) {
+        console.log(data.name);
+        if (data.name !== null) {
           repoReleaseInfo = {
             gitHubUser: githubUser,
             gitHubRepo: githubRepo,
@@ -115,9 +116,13 @@ class App extends React.Component {
             githubLink: data.html_url,
           };
           this.getRepoGeneralInfo(repoReleaseInfo);
-        } else if (!data.name) {
+        } else if (data.name === null) {
           this.setState({ alert: "error", isAlertDisplayed: true });
         }
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({ alert: "internal_error", isAlertDisplayed: true });
       });
   };
 
@@ -235,6 +240,12 @@ class App extends React.Component {
         return (
           <Alert severity="error" variant="filled" onClose={this.onCloseAlert}>
             Please check that you have the right user name and repository
+          </Alert>
+        );
+      case "internal_error":
+        return (
+          <Alert severity="error" variant="filled" onClose={this.onCloseAlert}>
+            Apologies! Apparently we can't get updates for this specific repo
           </Alert>
         );
       default:
