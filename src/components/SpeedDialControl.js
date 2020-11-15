@@ -61,7 +61,7 @@ class SpeedDialControl extends React.Component {
         className={"speed-dial-control"}
         ariaLabel="macro-control"
         hidden={isSpeedDialHidden}
-        icon={<AllOutIcon />}
+        icon={<AllOutIcon style={{ color: "white" }} />}
         onClose={this.onCloseSpeedDial}
         onOpen={this.onOpenSpeedDial}
         open={isSpeedDialOpen}

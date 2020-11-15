@@ -61,7 +61,7 @@ class SearchField extends React.Component {
                       aria-haspopup="true"
                       onClick={this.onClickSearchFunction}
                     >
-                      <PlaylistAddIcon />
+                      <PlaylistAddIcon color="primary" />
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -74,6 +74,7 @@ class SearchField extends React.Component {
               variant="contained"
               type="submit"
               size="large"
+              style={{ color: "white" }}
             >
               Add Repo
             </Button>

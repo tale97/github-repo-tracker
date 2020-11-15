@@ -51,7 +51,7 @@ class FilterBar extends React.Component {
                   aria-haspopup="true"
                   onClick={this.onClickSearchFunction}
                 >
-                  <SearchIcon />
+                  <SearchIcon color="primary" />
                 </IconButton>
               </InputAdornment>
             ),

@@ -4,9 +4,13 @@ import "./styles/index.scss";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { PRIMARY_COLOR } from "./constants";
 
 const theme = createMuiTheme({
   palette: {
+    primary: {
+      main: PRIMARY_COLOR,
+    },
     // type: "",
   },
 });

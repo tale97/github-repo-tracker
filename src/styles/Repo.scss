@@ -1,12 +1,14 @@
+@import "variables.scss";
+
 .repo {
   width: 50vw;
   min-width: 300px;
   max-width: 500px;
-  border: solid 2px white;
+  border: solid 2px #f6f6f6;
 }
 
 .highlighted {
-  border: solid 2px #303f9f;
+  border: solid 2px $PRIMARY_COLOR;
 }
 
 .card-content {
