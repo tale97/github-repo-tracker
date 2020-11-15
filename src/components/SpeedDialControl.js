@@ -5,10 +5,9 @@ import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import ArrowDropDownCircleIcon from "@material-ui/icons/ArrowDropDownCircle";
-import Tooltip from "@material-ui/core/Tooltip";
 import AllOutIcon from "@material-ui/icons/AllOut";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import "../styles/SpeedDialControl.scss";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 
 class SpeedDialControl extends React.Component {
   constructor(props) {
@@ -61,7 +60,13 @@ class SpeedDialControl extends React.Component {
         className={"speed-dial-control"}
         ariaLabel="macro-control"
         hidden={isSpeedDialHidden}
-        icon={<AllOutIcon style={{ color: "white" }} />}
+        icon={
+          <SpeedDialIcon
+            icon={<AllOutIcon />}
+            openIcon={<ArrowDropUpIcon />}
+            style={{ color: "white" }}
+          />
+        }
         onClose={this.onCloseSpeedDial}
         onOpen={this.onOpenSpeedDial}
         open={isSpeedDialOpen}

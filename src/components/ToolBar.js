@@ -24,7 +24,7 @@ class ToolBar extends React.Component {
         alignItems="center"
       >
         <Grid item className="release-status">
-          Tracking release
+          {`Tracking ${repo.trackingType}`}
         </Grid>
         <Grid item className="toolbar-empty-space"></Grid>
         <Grid item className="github-button">
@@ -64,8 +64,8 @@ class ToolBar extends React.Component {
               aria-label="check"
               onClick={() => onClickCheckMark(repo.name)}
               color="primary"
-              disableRipple="true"
-              disableFocusRipple="true"
+              disableRipple={true}
+              disableFocusRipple={true}
               style={{ backgroundColor: "transparent", cursor: "default" }}
             >
               <BeenhereIcon />

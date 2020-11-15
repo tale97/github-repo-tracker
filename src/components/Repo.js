@@ -36,7 +36,7 @@ class Repo extends React.Component {
                   <h2>{repo.name}</h2>
                   Latest version: {repo.tagName}
                   <br />
-                  Latest release:{" "}
+                  Latest {`${repo.trackingType}`}:{" "}
                   {repo.releaseDate
                     .split("T")
                     .join(" at ")

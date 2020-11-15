@@ -7,6 +7,11 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 export default function RepoDialog({ repo, toggleDialogVisibility, open }) {
+  const capitalize = (s) => {
+    if (typeof s !== "string") return "";
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+
   return (
     <div>
       <Dialog
@@ -16,18 +21,21 @@ export default function RepoDialog({ repo, toggleDialogVisibility, open }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Release Details"}</DialogTitle>
+        <DialogTitle
+          id="alert-dialog-title"
+          style={{ textAlign: "center" }}
+        >{`${capitalize(repo.trackingType)} Details`}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <b>Repo:</b> {repo.name}
             <br />
             <b>Version:</b> {repo.tagName}
             <br />
-            <b>Release Title:</b> {repo.title}
+            <b>{capitalize(`${repo.trackingType}`)} Title:</b> {repo.title}
             <br />
             <b>Author:</b> {repo.author}
             <br />
-            <b>Release Notes:</b> {repo.body}
+            <b>{capitalize(`${repo.trackingType}`)} Notes:</b> {repo.body}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

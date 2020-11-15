@@ -94,17 +94,15 @@ class App extends React.Component {
   getRepoLatestRelease = (githubUser, githubRepo) => {
     var repoReleaseInfo = null;
     var gitHubAPIRequestUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/releases/latest`;
-
-    console.log(`test ${gitHubAPIRequestUrl}`);
     fetch(gitHubAPIRequestUrl, {
       method: "GET",
       headers: this.state.headers,
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.name);
-        if (data.name !== null) {
+        if (data.name !== undefined && data.name !== null) {
           repoReleaseInfo = {
+            trackingType: "release",
             gitHubUser: githubUser,
             gitHubRepo: githubRepo,
             releaseDate: data.published_at,
@@ -116,7 +114,45 @@ class App extends React.Component {
             githubLink: data.html_url,
           };
           this.getRepoGeneralInfo(repoReleaseInfo);
-        } else if (data.name === null) {
+        } else {
+          this.getRepoLatestCommit(githubUser, githubRepo);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        // attempt to get latest commit instead
+        this.getRepoLatestCommit(githubUser, githubRepo);
+      });
+  };
+
+  getRepoLatestCommit = (githubUser, githubRepo) => {
+    var repoReleaseInfo = null;
+    var gitHubAPIRequestUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/commits`;
+    console.log(`get commits ${gitHubAPIRequestUrl}`);
+
+    fetch(gitHubAPIRequestUrl, {
+      method: "GET",
+      headers: this.state.headers,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        var latestCommit = data[0];
+        console.log(latestCommit);
+        if (latestCommit.sha !== undefined && latestCommit.sha !== null) {
+          repoReleaseInfo = {
+            trackingType: "commit",
+            gitHubUser: githubUser,
+            gitHubRepo: githubRepo,
+            releaseDate: latestCommit.commit.committer.date,
+            tagName: "N/A",
+            message: latestCommit.commit.message,
+            body: latestCommit.commit.message,
+            title: "N/A",
+            author: latestCommit.commit.author.name,
+            githubLink: latestCommit.html_url,
+          };
+          this.getRepoGeneralInfo(repoReleaseInfo);
+        } else {
           this.setState({ alert: "error", isAlertDisplayed: true });
         }
       })
@@ -245,7 +281,8 @@ class App extends React.Component {
       case "internal_error":
         return (
           <Alert severity="error" variant="filled" onClose={this.onCloseAlert}>
-            Apologies! Apparently we can't get updates for this specific repo
+            Apologies! Apparently we can't get any info about releases or
+            commits for this repository :(
           </Alert>
         );
       default:
