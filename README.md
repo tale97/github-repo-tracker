@@ -29,9 +29,13 @@ Here's the [link to the web app](https://tale97.github.io/github-repo-tracker/) 
 
 This is a take home assignment assigned to me by a company. This web app is still very basic but expect to see more features!
 
+## Some Features
+
+- Automatically track commit if there is the repo has no release
+- Can filter tracked repo by name
+
 ## Potential Upcoming Features
 
-- Option to track repository's latest commit instead of latest release
 - More options to filter repositories list (by latest updates/alphabetical sorting/date added and so on)
 - User Login/Account creation
 - Better, more intuitive UI similar to Spotify's playlist UI
