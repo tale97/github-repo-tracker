@@ -27,6 +27,8 @@ class App extends React.Component {
     this.repoListRef = React.createRef();
   }
 
+  sortReposByLatestUpdate = () => {};
+
   handleOnSubmit = (event) => {
     event.preventDefault();
     this.parseSearchInput(this.state.searchInput);
@@ -149,7 +151,7 @@ class App extends React.Component {
             author: latestCommit.commit.author.name,
             githubLink: latestCommit.html_url,
           };
-          this.getRepoGeneralInfo(repoReleaseInfo);
+          this.getRepoGeneralInfo(repoReleaseInfo, gitHubUser, gitHubRepo);
         } else {
           this.setState({ alert: "error", isAlertDisplayed: true });
         }
@@ -160,13 +162,8 @@ class App extends React.Component {
       });
   };
 
-  getRepoGeneralInfo = (repoReleaseInfo) => {
-    const {
-      gitHubUser,
-      gitHubRepo,
-      repoList,
-      highlightedRepoList,
-    } = this.state;
+  getRepoGeneralInfo = (repoReleaseInfo, gitHubUser, gitHubRepo) => {
+    const { repoList, highlightedRepoList } = this.state;
     var newRepoList = repoList;
     var newHighlightedRepoList = [];
     fetch(`https://api.github.com/repos/${gitHubUser}/${gitHubRepo}`, {
@@ -181,7 +178,7 @@ class App extends React.Component {
           // if repo is not already tracked
           newRepoList.push(repoReleaseInfo);
           newHighlightedRepoList = highlightedRepoList;
-          newHighlightedRepoList.push(repoReleaseInfo.name);
+          newHighlightedRepoList.push(repoReleaseInfo.gitHubRepo);
           this.setState({
             repoList: newRepoList,
             alert: "success",
@@ -192,12 +189,15 @@ class App extends React.Component {
           if (this.isRepoGotNewUpdate(repoReleaseInfo)) {
             // if repo is already tracked but has new updates
             newRepoList = this.deleteOutdatedRepo(newRepoList, repoReleaseInfo);
+            console.log(
+              `Adding ${repoReleaseInfo.gitHubUser}/${repoReleaseInfo.gitHubRepo} ${repoReleaseInfo.name}`
+            );
             newRepoList.push(repoReleaseInfo);
             newHighlightedRepoList = highlightedRepoList;
             newHighlightedRepoList.push(repoReleaseInfo.name);
             this.setState({
               repoList: newRepoList,
-              alert: "new release",
+              alert: `new ${repoReleaseInfo.trackingType}`,
               highlightedRepoList: newHighlightedRepoList,
               isAlertDisplayed: true,
             });
@@ -212,15 +212,16 @@ class App extends React.Component {
       });
   };
 
-  printRepoList = () => {
-    for (var repo of this.state.repoList) {
+  printRepoList = (repoList) => {
+    console.log("------");
+    for (var repo of repoList) {
       console.log(`${repo.gitHubUser}/${repo.gitHubRepo}`);
     }
+    console.log("------");
   };
 
   isRepoGotNewUpdate = (newRepo) => {
     const { repoList } = this.state;
-    this.printRepoList();
 
     for (var trackedRepo of repoList) {
       if (
@@ -228,20 +229,29 @@ class App extends React.Component {
         trackedRepo.gitHubRepo === newRepo.gitHubRepo &&
         trackedRepo.releaseDate !== newRepo.releaseDate
       ) {
+        console.log(
+          `new update for ${newRepo.gitHubUser}/${newRepo.gitHubRepo} old data: ${trackedRepo.releaseDate}, new data: ${newRepo.releaseDate}`
+        );
         return true;
       }
     }
     return false;
   };
 
-  deleteOutdatedRepo = (repoList, repo) => {
+  deleteOutdatedRepo = (repoList, repoToBeDeleted) => {
+    // only keep repos that doesn't share gitHubName & gitHubRepo
+    this.printRepoList(repoList);
     const filteredRepoList = repoList.filter((trackedRepo) => {
-      // only keep repos that doesn't share gitHubName & gitHubRepo
-      return (
-        trackedRepo.gitHubUser !== repo.gitHubUser &&
-        trackedRepo.gitHubRepo !== repo.gitHubRepo
+      return !(
+        trackedRepo.gitHubUser === repoToBeDeleted.gitHubUser &&
+        trackedRepo.gitHubRepo === repoToBeDeleted.gitHubRepo
       );
     });
+    let difference = repoList.filter((x) => !filteredRepoList.includes(x));
+    console.log(`DELETED ${difference[0].gitHubRepo}`);
+    if (difference.length > 1) {
+      console.log(`DELETED ${difference[1].gitHubRepo}`);
+    }
     return filteredRepoList;
   };
 
@@ -257,7 +267,7 @@ class App extends React.Component {
 
   filterRepoList = (repoList, filterWord) => {
     var filteredRepoList = repoList.filter((repo) => {
-      return repo.name.includes(filterWord);
+      return repo.gitHubRepo.includes(filterWord);
     });
     return filteredRepoList;
   };
@@ -272,6 +282,16 @@ class App extends React.Component {
             onClose={this.onCloseAlert}
           >
             Added a new repo for tracking
+          </Alert>
+        );
+      case "new commit":
+        return (
+          <Alert
+            severity="success"
+            variant="filled"
+            onClose={this.onCloseAlert}
+          >
+            Found new commit(s)
           </Alert>
         );
       case "new release":
@@ -368,7 +388,7 @@ class App extends React.Component {
           </Grid>
           <Grid item>
             <RepoList
-              repoList={this.filterRepoList(repoList, filterInput)}
+              repoList={this.filterRepoList(repoList, filterInput).reverse()}
               onClickTrashIcon={this.onClickTrashIcon}
               onClickCheckMark={this.onClickCheckMark}
               highlightedRepoList={highlightedRepoList}

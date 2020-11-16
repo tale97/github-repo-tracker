@@ -17,7 +17,7 @@ class Repo extends React.Component {
 
   isHighlighted = () => {
     const { highlightedRepoList, repo } = this.props;
-    return highlightedRepoList.includes(repo.name) ? `highlighted` : ``;
+    return highlightedRepoList.includes(repo.gitHubRepo) ? `highlighted` : ``;
   };
 
   toggleDialogVisibility = () => {
@@ -28,12 +28,14 @@ class Repo extends React.Component {
     const { repo, onClickTrashIcon, onClickCheckMark } = this.props;
     return (
       <div>
-        <Card className={`repo ${this.isHighlighted(repo.name)}`}>
+        <Card className={`repo ${this.isHighlighted(repo.gitHubRepo)}`}>
           <CardActionArea onClick={this.toggleDialogVisibility}>
             <Grid container direction="row" alignItems="center" spacing={2}>
               <Grid item className="card-content">
                 <CardContent>
-                  <h2>{repo.name}</h2>
+                  <h2>
+                    {repo.gitHubUser}/{repo.gitHubRepo}
+                  </h2>
                   Latest version: {repo.tagName}
                   <br />
                   Latest {`${repo.trackingType}`}:{" "}

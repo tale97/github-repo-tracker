@@ -27,7 +27,7 @@ export default function RepoDialog({ repo, toggleDialogVisibility, open }) {
         >{`${capitalize(repo.trackingType)} Details`}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <b>Repo:</b> {repo.name}
+            <b>Repo:</b> {repo.gitHubRepo}
             <br />
             <b>Version:</b> {repo.tagName}
             <br />

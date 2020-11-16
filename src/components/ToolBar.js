@@ -52,7 +52,7 @@ class ToolBar extends React.Component {
             <Tooltip title="Mark update as seen">
               <IconButton
                 aria-label="check"
-                onClick={() => onClickCheckMark(repo.name)}
+                onClick={() => onClickCheckMark(repo.gitHubRepo)}
               >
                 <BeenhereOutlinedIcon />
               </IconButton>
@@ -62,7 +62,7 @@ class ToolBar extends React.Component {
           <Grid item className={`check-button`}>
             <IconButton
               aria-label="check"
-              onClick={() => onClickCheckMark(repo.name)}
+              onClick={() => onClickCheckMark(repo.gitHubRepo)}
               color="primary"
               disableRipple={true}
               disableFocusRipple={true}
