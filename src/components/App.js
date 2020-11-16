@@ -100,8 +100,7 @@ class App extends React.Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.name !== undefined && data.name !== null) {
-          console.log(`latest release ${gitHubRepo}`);
+        if (data.html_url !== undefined && data.html_url !== null) {
           repoReleaseInfo = {
             trackingType: "release",
             gitHubUser: gitHubUser,
@@ -138,7 +137,6 @@ class App extends React.Component {
       .then((data) => {
         var latestCommit = data[0];
         if (latestCommit.sha !== undefined && latestCommit.sha !== null) {
-          console.log(`latest commit ${gitHubRepo}`);
           repoReleaseInfo = {
             trackingType: "commit",
             gitHubUser: gitHubUser,
@@ -175,6 +173,7 @@ class App extends React.Component {
         repoReleaseInfo.name = data.name;
         repoReleaseInfo.description = data.description;
         if (!this.isRepoAlreadyTracked(repoReleaseInfo)) {
+          // if repo is not already tracked
           newRepoList = this.state.repoList;
           newRepoList.push(repoReleaseInfo);
           newHighlightedRepoList = this.state.highlightedRepoList;
@@ -187,6 +186,7 @@ class App extends React.Component {
           });
         } else {
           if (this.isRepoGotNewUpdate(repoReleaseInfo)) {
+            // if repo is already tracked but has new updates
             newRepoList = this.state.repoList;
             newRepoList = this.deleteOutdatedRepo(newRepoList, repoReleaseInfo);
             newHighlightedRepoList = this.state.highlightedRepoList;
@@ -198,6 +198,7 @@ class App extends React.Component {
               isAlertDisplayed: true,
             });
           } else {
+            // if repo is already being tracked and there is no new updates
             this.setState({ alert: "no new release", isAlertDisplayed: true });
           }
         }
@@ -218,14 +219,11 @@ class App extends React.Component {
     this.printRepoList();
 
     for (var trackedRepo of repoList) {
-      console.log(`${trackedRepo.name}`);
       if (
-        trackedRepo.name === newRepo.name &&
+        trackedRepo.gitHubUser === newRepo.gitHubUser &&
+        trackedRepo.gitHubRepo === newRepo.gitHubRepo &&
         trackedRepo.releaseDate !== newRepo.releaseDate
       ) {
-        console.log(
-          `NEW UPDATE ${trackedRepo.name} ${trackedRepo.releaseDate} ${newRepo.name} ${newRepo.releaseDate}`
-        );
         return true;
       }
     }
@@ -234,7 +232,11 @@ class App extends React.Component {
 
   deleteOutdatedRepo = (repoList, repo) => {
     const filteredRepoList = repoList.filter((trackedRepo) => {
-      return trackedRepo.name !== repo.name;
+      // only keep repos that doesn't share gitHubName & gitHubRepo
+      return (
+        trackedRepo.gitHubUser !== repo.gitHubUser &&
+        trackedRepo.gitHubRepo !== repo.gitHubRepo
+      );
     });
     return filteredRepoList;
   };
