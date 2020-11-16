@@ -161,8 +161,13 @@ class App extends React.Component {
   };
 
   getRepoGeneralInfo = (repoReleaseInfo) => {
-    const { gitHubUser, gitHubRepo } = this.state;
-    var newRepoList = [];
+    const {
+      gitHubUser,
+      gitHubRepo,
+      repoList,
+      highlightedRepoList,
+    } = this.state;
+    var newRepoList = repoList;
     var newHighlightedRepoList = [];
     fetch(`https://api.github.com/repos/${gitHubUser}/${gitHubRepo}`, {
       method: "GET",
@@ -174,9 +179,8 @@ class App extends React.Component {
         repoReleaseInfo.description = data.description;
         if (!this.isRepoAlreadyTracked(repoReleaseInfo)) {
           // if repo is not already tracked
-          newRepoList = this.state.repoList;
           newRepoList.push(repoReleaseInfo);
-          newHighlightedRepoList = this.state.highlightedRepoList;
+          newHighlightedRepoList = highlightedRepoList;
           newHighlightedRepoList.push(repoReleaseInfo.name);
           this.setState({
             repoList: newRepoList,
@@ -187,9 +191,9 @@ class App extends React.Component {
         } else {
           if (this.isRepoGotNewUpdate(repoReleaseInfo)) {
             // if repo is already tracked but has new updates
-            newRepoList = this.state.repoList;
             newRepoList = this.deleteOutdatedRepo(newRepoList, repoReleaseInfo);
-            newHighlightedRepoList = this.state.highlightedRepoList;
+            newRepoList.push(repoReleaseInfo);
+            newHighlightedRepoList = highlightedRepoList;
             newHighlightedRepoList.push(repoReleaseInfo.name);
             this.setState({
               repoList: newRepoList,
