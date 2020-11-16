@@ -27,6 +27,14 @@ class App extends React.Component {
     this.repoListRef = React.createRef();
   }
 
+  componentDidMount = () => {
+    const REFRESH_INTERVAL_IN_HOUR = 1;
+    setInterval(
+      this.getAllReposLatestUpdates,
+      REFRESH_INTERVAL_IN_HOUR * 1000 * 60 * 60
+    );
+  };
+
   sortReposByLatestUpdate = () => {};
 
   handleOnSubmit = (event) => {
@@ -86,7 +94,7 @@ class App extends React.Component {
     });
   };
 
-  getAllReposLatestReleases = () => {
+  getAllReposLatestUpdates = () => {
     const { repoList } = this.state;
     for (var repo of repoList) {
       this.getRepoLatestRelease(repo.gitHubUser, repo.gitHubRepo);
@@ -189,12 +197,9 @@ class App extends React.Component {
           if (this.isRepoGotNewUpdate(repoReleaseInfo)) {
             // if repo is already tracked but has new updates
             newRepoList = this.deleteOutdatedRepo(newRepoList, repoReleaseInfo);
-            console.log(
-              `Adding ${repoReleaseInfo.gitHubUser}/${repoReleaseInfo.gitHubRepo} ${repoReleaseInfo.name}`
-            );
             newRepoList.push(repoReleaseInfo);
             newHighlightedRepoList = highlightedRepoList;
-            newHighlightedRepoList.push(repoReleaseInfo.name);
+            newHighlightedRepoList.push(repoReleaseInfo.gitHubRepo);
             this.setState({
               repoList: newRepoList,
               alert: `new ${repoReleaseInfo.trackingType}`,
@@ -212,14 +217,6 @@ class App extends React.Component {
       });
   };
 
-  printRepoList = (repoList) => {
-    console.log("------");
-    for (var repo of repoList) {
-      console.log(`${repo.gitHubUser}/${repo.gitHubRepo}`);
-    }
-    console.log("------");
-  };
-
   isRepoGotNewUpdate = (newRepo) => {
     const { repoList } = this.state;
 
@@ -229,9 +226,6 @@ class App extends React.Component {
         trackedRepo.gitHubRepo === newRepo.gitHubRepo &&
         trackedRepo.releaseDate !== newRepo.releaseDate
       ) {
-        console.log(
-          `new update for ${newRepo.gitHubUser}/${newRepo.gitHubRepo} old data: ${trackedRepo.releaseDate}, new data: ${newRepo.releaseDate}`
-        );
         return true;
       }
     }
@@ -247,11 +241,6 @@ class App extends React.Component {
         trackedRepo.gitHubRepo === repoToBeDeleted.gitHubRepo
       );
     });
-    let difference = repoList.filter((x) => !filteredRepoList.includes(x));
-    console.log(`DELETED ${difference[0].gitHubRepo}`);
-    if (difference.length > 1) {
-      console.log(`DELETED ${difference[1].gitHubRepo}`);
-    }
     return filteredRepoList;
   };
 
@@ -357,7 +346,7 @@ class App extends React.Component {
     return (
       <div>
         <SpeedDialControl
-          getAllReposLatestReleases={this.getAllReposLatestReleases}
+          getAllReposLatestUpdates={this.getAllReposLatestUpdates}
           deleteAllRepos={this.deleteAllRepos}
         />
         <Snackbar

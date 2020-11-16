@@ -27,7 +27,7 @@ class SpeedDialControl extends React.Component {
     {
       icon: <RefreshIcon color="primary" />,
       name: "Refresh All",
-      onClick: this.props.getAllReposLatestReleases,
+      onClick: this.props.getAllReposLatestUpdates,
     },
   ];
 
