@@ -39,6 +39,7 @@ This is a take home assignment assigned to me by a company. While quite rudament
 ## Potential Upcoming Features by Priority
 
 - User Login/Account creation (allow quick signup/login thru GitHub account)
+- Add a "last updated X time ago" text
 - A clear X button to clear search input
 - An optional notification system to send notifs when there is an update for certain repos
 - Periodically check for updates for repositories even when User doesn't have the app open 
