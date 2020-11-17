@@ -234,7 +234,6 @@ class App extends React.Component {
 
   deleteOutdatedRepo = (repoList, repoToBeDeleted) => {
     // only keep repos that doesn't share gitHubName & gitHubRepo
-    this.printRepoList(repoList);
     const filteredRepoList = repoList.filter((trackedRepo) => {
       return !(
         trackedRepo.gitHubUser === repoToBeDeleted.gitHubUser &&
