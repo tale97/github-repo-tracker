@@ -330,7 +330,7 @@ class App extends React.Component {
   };
 
   onClickSearchFunction = () => {
-    this.setState({ searchFunctionType: "search" });
+    this.setState({ searchFunctionType: "search", filterInput: "" });
   };
 
   render() {

@@ -41,11 +41,13 @@ This is a take home assignment assigned to me by a company. While quite rudament
 - User Login/Account creation (allow quick signup/login thru GitHub account)
 - Add a "last updated X time ago" text
 - A clear X button to clear search input
+- Add confirmation dialogue for irreversible action like "untrack repo" or "delete all repo"
 - An optional notification system to send notifs when there is an update for certain repos
-- Periodically check for updates for repositories even when User doesn't have the app open 
+- Periodically check for updates for repositories even when User doesn't have the app open
 - More options to filter/sort repositories (by latest updates/alphabetical sorting/date added and so on)
 - Better, more intuitive UI similar to Spotify's playlist UI
 - improve release note visual (it's currently displaying GitHub's README markup in plain text, which is a bit hard to read)
+- make responsive for use on mobile
 
 ## Setup
 
